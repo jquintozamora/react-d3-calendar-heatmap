@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es6",
+    "moduleResolution": "node",
+    "declaration": true,
+    "outDir": "./dist",
+    "noImplicitAny": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "removeComments": true,
+    "noLib": false,
+    "preserveConstEnums": true,
+    "sourceMap": false,
+    "jsx": "react",
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["node", "react", "react-dom"]
+  },
+  "filesGlob": ["./**/*.ts", "!./node_modules/**/*.ts"],
+  "files": ["./src/indexPackage.ts"],
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "./src/pages/*.*",
+    "**/*.spec.ts"
+  ]
+}
