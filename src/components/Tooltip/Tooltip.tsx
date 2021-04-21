@@ -13,11 +13,11 @@ export const Tooltip = React.memo<TooltipProps>(({ label, value }) => {
   const { tooltipClassName } = useTooltip();
   return (
     <div className={tooltipClassName}>
-      <div className="TreeMap__tooltip">
+      <div className="CalendarHeatMap__tooltip">
         {value !== undefined ? (
           <>
-            <span className="TreeMap__tooltipLabel">{label}: </span>
-            <span className="TreeMap__tooltipValue">{`${value}`}</span>
+            <span className="CalendarHeatMap__tooltipLabel">{label}: </span>
+            <span className="CalendarHeatMap__tooltipValue">{`${value}`}</span>
           </>
         ) : (
           label

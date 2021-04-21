@@ -21,7 +21,7 @@ export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
   weekday?: "weekday" | "sunday";
   /**
    * Tooltip placement. If none is specified then is automatic depending on
-   * the quadrant of the treeMap
+   * the quadrant
    */
   tooltipPlacement?: TooltipPlacement;
 
