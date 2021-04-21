@@ -1,9 +1,22 @@
 import * as React from "react";
 import useTooltip from "../Tooltip/useTooltip";
 import { Tooltip } from "../Tooltip/Tooltip";
-import { utcYear } from "d3-time";
+import { CountableTimeInterval, utcYear } from "d3-time";
+import { BaseCalendarHeatMapItemType } from "../CalendarHeatMap/CalendarHeatMap";
+import { ScaleSequential } from "d3-scale";
 
-const Cell: React.FunctionComponent<any> = ({
+interface CellProps<CalendarHeatMapItemType> {
+  c: CalendarHeatMapItemType;
+  color: ScaleSequential<string, never>;
+  cellSize: number;
+  countDay: (i: number) => number;
+  timeWeek: CountableTimeInterval;
+  formatDate: (date: Date) => string;
+  formatValue: (n: number | { valueOf(): number }) => string;
+  timeRange?: { from: Date; to: Date };
+}
+
+const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
   color,
   cellSize,
   c,
@@ -11,15 +24,16 @@ const Cell: React.FunctionComponent<any> = ({
   timeWeek,
   formatDate,
   formatValue,
+  timeRange,
   ...rest
-}) => {
+}: CellProps<CalendarHeatMapItemType>): React.ReactElement => {
   const { hideTooltip, showTooltip, disableTooltip } = useTooltip();
 
   const handleMouseMove = React.useCallback(
     (ev: React.MouseEvent) => {
       showTooltip(
         <Tooltip
-          label={`${formatDate(new Date(c.date))}`}
+          label={`${formatDate(new Date(c.day))}`}
           value={`${formatValue(c.value)}`}
         />,
         ev
@@ -31,6 +45,13 @@ const Cell: React.FunctionComponent<any> = ({
   const handleMouseLeave = React.useCallback(() => {
     hideTooltip();
   }, [hideTooltip]);
+
+  const cellDay = new Date(c.day);
+  const x =
+    timeWeek.count(timeRange ? timeRange.from : utcYear(cellDay), cellDay) *
+      cellSize +
+    1;
+
   return (
     <rect
       onMouseEnter={disableTooltip ? undefined : handleMouseMove}
@@ -39,11 +60,8 @@ const Cell: React.FunctionComponent<any> = ({
       rx={9999}
       width={cellSize - 2}
       height={cellSize - 2}
-      x={
-        timeWeek.count(utcYear(new Date(c.date)), new Date(c.date)) * cellSize +
-        1
-      }
-      y={countDay(new Date(c.date).getUTCDay()) * cellSize + 0.5}
+      x={x}
+      y={countDay(new Date(c.day).getUTCDay()) * cellSize + 0.5}
       fill={color(c.value)}
       {...rest}
     />

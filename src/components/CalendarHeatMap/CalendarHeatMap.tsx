@@ -13,11 +13,11 @@ import TooltipProvider from "../Tooltip/TooltipProvider";
 import { TooltipPlacement } from "../Tooltip/types";
 import Cell from "../Cell";
 
-type CalendarHeatMapData = Array<{ date: string; value: number }>;
+export type BaseCalendarHeatMapItemType = { day: string; value: number };
 
-export interface CalendarHeatMapProps {
+export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
   className?: string;
-  data: CalendarHeatMapData;
+  data: Array<CalendarHeatMapItemType>;
   weekday?: "weekday" | "sunday";
   /**
    * Tooltip placement. If none is specified then is automatic depending on
@@ -52,31 +52,44 @@ export interface CalendarHeatMapProps {
   tooltipOffsetY?: number;
 }
 
-const CalendarHeatMap: React.FunctionComponent<CalendarHeatMapProps> = ({
+const CalendarHeatMap = <
+  CalendarHeatMapItemType extends BaseCalendarHeatMapItemType
+>({
   className,
   data,
-  weekday = "sunday",
+  weekday = "weekday",
   disableTooltip = false,
   tooltipOffsetX = 0,
   tooltipOffsetY = 0,
   tooltipPlacement,
   tooltipClassName,
-}) => {
-  const [color] = React.useState(() => {
-    const max = quantile(data, 0.9975, (d) => Math.abs(d.value));
-    return scaleSequential(interpolatePiYG).domain([-max, +max]);
-  });
-
+}: CalendarHeatMapProps<CalendarHeatMapItemType>): React.ReactElement => {
+  // TODO (Jose Quinto Zamora) [2021-04-21]: To be move as prop
+  // const timeRange = undefined
   const timeRange = {
-    from: "2020-03-01T00:00:00.000Z",
-    to: "2020-05-01T00:00:00.000Z",
+    from: new Date("2020-08-01"),
+    to: new Date("2021-08-01"),
   };
+
+  const filteredData = timeRange
+    ? data.filter((d) => {
+        const currentDay = new Date(d.day);
+        return currentDay >= timeRange.from && currentDay <= timeRange.to;
+      })
+    : data;
 
   const cellSize = 17;
   const width = 954;
+
+  const [color] = React.useState(() => {
+    const max = quantile(filteredData, 0.9975, (d) => Math.abs(d.value));
+    return scaleSequential(interpolatePiYG).domain([-max, +max]);
+  });
+
   const height = cellSize * (weekday === "weekday" ? 7 : 9);
   const timeWeek = weekday === "sunday" ? utcSunday : utcMonday;
-  const countDay = weekday === "sunday" ? (i) => i : (i) => (i + 6) % 7;
+  const countDay =
+    weekday === "sunday" ? (i: number) => i : (i: number) => (i + 6) % 7;
 
   const formatValue = format("+.2%");
 
@@ -88,17 +101,27 @@ const CalendarHeatMap: React.FunctionComponent<CalendarHeatMapProps> = ({
 
   const rows = weekday === "weekday" ? range(1, 6) : range(7);
 
+  const { 0: firstItem, [filteredData.length - 1]: lastItem } = filteredData;
+  let columns = [];
+  if (firstItem) {
+    const firstDay = new Date(firstItem.day);
+    const lastDay = new Date(lastItem.day);
+    columns = utcMonths(
+      timeRange ? utcMonth(timeRange.from) : utcMonth(utcYear(firstDay)),
+      timeRange ? timeRange.to : lastDay
+    );
+  } else {
+    console.warn("CalendarHeatMap: Please provide valid data or time range");
+  }
+
   const cells =
     weekday === "weekday"
-      ? data.filter((d) => ![0, 6].includes(new Date(d.date).getUTCDay()))
-      : data;
+      ? filteredData.filter(
+          (d) => ![0, 6].includes(new Date(d.day).getUTCDay())
+        )
+      : filteredData;
 
-  const columns = utcMonths(
-    utcMonth(new Date(data[0].date)),
-    new Date(data[data.length - 1].date)
-  );
-
-  const svgWidth = width / (12 / columns.length);
+  const svgWidth = width; // / (12 / columns.length);
 
   return (
     <TooltipProvider
@@ -131,7 +154,7 @@ const CalendarHeatMap: React.FunctionComponent<CalendarHeatMapProps> = ({
             <g>
               {cells.map((c, index) => {
                 return (
-                  <Cell
+                  <Cell<CalendarHeatMapItemType>
                     key={index}
                     c={c}
                     color={color}
@@ -140,6 +163,7 @@ const CalendarHeatMap: React.FunctionComponent<CalendarHeatMapProps> = ({
                     timeWeek={timeWeek}
                     formatDate={formatDate}
                     formatValue={formatValue}
+                    timeRange={timeRange}
                   />
                 );
               })}
@@ -158,7 +182,10 @@ const CalendarHeatMap: React.FunctionComponent<CalendarHeatMapProps> = ({
                   )} */}
                     <text
                       x={
-                        timeWeek.count(utcYear(d), timeWeek.ceil(d)) *
+                        timeWeek.count(
+                          timeRange ? timeRange.from : utcYear(d),
+                          timeWeek.ceil(d)
+                        ) *
                           cellSize +
                         2
                       }
