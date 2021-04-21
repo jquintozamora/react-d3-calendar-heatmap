@@ -37,11 +37,11 @@ interface CalendarHeatMapItemType {
 
 ## App sample
 
-You can see an example of App [here](https://github.com/jquintozamora/react-d3-calendar-heatmap/blob/master/demo/App/App.tsx).
+You can see an example of App [here](https://github.com/jquintozamora/react-d3-calendar-heatmap/blob/main/demo/App/App.tsx).
 
 ## Data sample
 
-You can see an example of data [here](https://github.com/jquintozamora/react-d3-calendar-heatmap/blob/master/demo/data/data.ts).
+You can see an example of data [here](https://github.com/jquintozamora/react-d3-calendar-heatmap/blob/main/demo/data/data.ts).
 
 ## License
 
