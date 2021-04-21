@@ -7,6 +7,9 @@ and [React](https://facebook.github.io/react) based on [Mike Bostock´s Calendar
 [![Code Climate](https://codeclimate.com/github/jquintozamora/react-d3-calendar-heatmap/badges/gpa.svg)](https://codeclimate.com/github/jquintozamora/react-d3-calendar-heatmap)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](Readme.md#want-to-contribute)
 
+## DEMO
+
+[React D3 Calendar Heatmap demo](https://jquintozamora.github.io/react-d3-calendar-heatmap)
 ## Installation
 
 Steps to use react-d3-calendar-heatmap in your React project
