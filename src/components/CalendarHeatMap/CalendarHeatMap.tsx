@@ -50,6 +50,8 @@ export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
    * @default 0
    */
   tooltipOffsetY?: number;
+
+  timeRange?: { from: Date; to: Date };
 }
 
 const CalendarHeatMap = <
@@ -63,14 +65,8 @@ const CalendarHeatMap = <
   tooltipOffsetY = 0,
   tooltipPlacement,
   tooltipClassName,
+  timeRange,
 }: CalendarHeatMapProps<CalendarHeatMapItemType>): React.ReactElement => {
-  // TODO (Jose Quinto Zamora) [2021-04-21]: To be move as prop
-  // const timeRange = undefined
-  const timeRange = {
-    from: new Date("2020-08-01"),
-    to: new Date("2021-08-01"),
-  };
-
   const filteredData = timeRange
     ? data.filter((d) => {
         const currentDay = new Date(d.day);
