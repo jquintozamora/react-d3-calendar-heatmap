@@ -1,1 +1,2 @@
-export { default, CalendarHeatMapProps } from "./CalendarHeatMap"
+export { default } from "./CalendarHeatMap";
+export { CalendarHeatMapProps } from "./CalendarHeatMapProps";

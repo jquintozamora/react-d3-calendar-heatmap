@@ -2,7 +2,14 @@ import "./CalendarHeatMap.css";
 
 import * as React from "react";
 import classnames from "classnames";
-import { utcYear, utcSunday, utcMonday, utcMonths, utcMonth } from "d3-time";
+import {
+  utcYear,
+  utcSunday,
+  utcMonday,
+  utcMonths,
+  utcMonth,
+  timeDay,
+} from "d3-time";
 import { scaleSequential } from "d3-scale";
 import { interpolatePiYG } from "d3-scale-chromatic";
 import { quantile, range } from "d3-array";
@@ -10,49 +17,12 @@ import { format } from "d3-format";
 import { utcFormat } from "d3-time-format";
 
 import TooltipProvider from "../Tooltip/TooltipProvider";
-import { TooltipPlacement } from "../Tooltip/types";
 import Cell from "../Cell";
-
-export type BaseCalendarHeatMapItemType = { day: string; value: number };
-
-export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
-  className?: string;
-  data: Array<CalendarHeatMapItemType>;
-  weekday?: "weekday" | "sunday";
-  /**
-   * Tooltip placement. If none is specified then is automatic depending on
-   * the quadrant
-   */
-  tooltipPlacement?: TooltipPlacement;
-
-  /**
-   * Tooltip custom css class
-   */
-  tooltipClassName?: string;
-
-  /**
-   * Disable custom tooltip
-   *
-   * @default false
-   */
-  disableTooltip?: boolean;
-
-  /**
-   * Tooltip offset X
-   *
-   * @default 0
-   */
-  tooltipOffsetX?: number;
-
-  /**
-   * Tooltip offset Y
-   *
-   * @default 0
-   */
-  tooltipOffsetY?: number;
-
-  timeRange?: { from: Date; to: Date };
-}
+import {
+  BaseCalendarHeatMapItemType,
+  CalendarHeatMapProps,
+} from "./CalendarHeatMapProps";
+import { sameDay } from "../../helpers";
 
 const CalendarHeatMap = <
   CalendarHeatMapItemType extends BaseCalendarHeatMapItemType
@@ -66,20 +36,32 @@ const CalendarHeatMap = <
   tooltipPlacement,
   tooltipClassName,
   timeRange,
+
+  customD3ColorScale = scaleSequential(interpolatePiYG),
+  width = 900,
+  cellSize = 17,
 }: CalendarHeatMapProps<CalendarHeatMapItemType>): React.ReactElement => {
-  const filteredData = timeRange
+  const currentTimeRange = timeRange
+    ? timeRange
+    : data && data.length > 0
+    ? {
+        from: utcYear(new Date(data[0].day)),
+        to: new Date(data[data.length - 1].day),
+      }
+    : undefined;
+  let filteredData = currentTimeRange
     ? data.filter((d) => {
         const currentDay = new Date(d.day);
-        return currentDay >= timeRange.from && currentDay <= timeRange.to;
+        return (
+          currentDay >= currentTimeRange.from &&
+          currentDay <= currentTimeRange.to
+        );
       })
     : data;
 
-  const cellSize = 17;
-  const width = 954;
-
   const [color] = React.useState(() => {
     const max = quantile(filteredData, 0.9975, (d) => Math.abs(d.value));
-    return scaleSequential(interpolatePiYG).domain([-max, +max]);
+    return customD3ColorScale.domain([-max, +max]);
   });
 
   const height = cellSize * (weekday === "weekday" ? 7 : 9);
@@ -103,11 +85,31 @@ const CalendarHeatMap = <
     const firstDay = new Date(firstItem.day);
     const lastDay = new Date(lastItem.day);
     columns = utcMonths(
-      timeRange ? utcMonth(timeRange.from) : utcMonth(utcYear(firstDay)),
-      timeRange ? timeRange.to : lastDay
+      currentTimeRange
+        ? utcMonth(currentTimeRange.from)
+        : utcMonth(utcYear(firstDay)),
+      currentTimeRange ? currentTimeRange.to : lastDay
     );
   } else {
     console.warn("CalendarHeatMap: Please provide valid data or time range");
+  }
+
+  if (currentTimeRange) {
+    const tempFilteredData = timeDay
+      .range(currentTimeRange.from, currentTimeRange.to)
+      .map((day) => {
+        const currentData = filteredData
+          .filter((item) => sameDay(new Date(item.day), day))
+          .pop();
+        if (currentData) {
+          return currentData;
+        }
+        return {
+          day: day.toISOString(),
+          value: 0,
+        } as CalendarHeatMapItemType;
+      });
+    filteredData = tempFilteredData;
   }
 
   const cells =
@@ -159,7 +161,7 @@ const CalendarHeatMap = <
                     timeWeek={timeWeek}
                     formatDate={formatDate}
                     formatValue={formatValue}
-                    timeRange={timeRange}
+                    timeRange={currentTimeRange}
                   />
                 );
               })}
@@ -179,7 +181,7 @@ const CalendarHeatMap = <
                     <text
                       x={
                         timeWeek.count(
-                          timeRange ? timeRange.from : utcYear(d),
+                          currentTimeRange ? currentTimeRange.from : utcYear(d),
                           timeWeek.ceil(d)
                         ) *
                           cellSize +

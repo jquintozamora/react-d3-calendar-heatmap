@@ -2,8 +2,8 @@ import * as React from "react";
 import useTooltip from "../Tooltip/useTooltip";
 import { Tooltip } from "../Tooltip/Tooltip";
 import { CountableTimeInterval, utcYear } from "d3-time";
-import { BaseCalendarHeatMapItemType } from "../CalendarHeatMap/CalendarHeatMap";
 import { ScaleSequential } from "d3-scale";
+import { BaseCalendarHeatMapItemType } from "../CalendarHeatMap/CalendarHeatMapProps";
 
 interface CellProps<CalendarHeatMapItemType> {
   c: CalendarHeatMapItemType;
@@ -62,7 +62,7 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
       height={cellSize - 2}
       x={x}
       y={countDay(new Date(c.day).getUTCDay()) * cellSize + 0.5}
-      fill={color(c.value)}
+      fill={c.value ? color(c.value) : "#eeeeee"}
       {...rest}
     />
   );

@@ -1,6 +1,12 @@
 import { utcYear } from "d3-time";
 
-export const pathMonth = (t: Date, weekday, cellSize, timeWeek, countDay) => {
+export const pathMonth = (
+  t: Date,
+  weekday,
+  cellSize,
+  timeWeek,
+  countDay
+): string => {
   const n = weekday === "weekday" ? 5 : 7;
   const d = Math.max(0, Math.min(n, countDay(t.getUTCDay())));
   const w = timeWeek.count(utcYear(t), t);
@@ -12,3 +18,8 @@ export const pathMonth = (t: Date, weekday, cellSize, timeWeek, countDay) => {
       : `M${(w + 1) * cellSize},0V${d * cellSize}H${w * cellSize}`
   }V${n * cellSize}`;
 };
+
+export const sameDay = (first: Date, second: Date): boolean =>
+  first.getUTCFullYear() === second.getUTCFullYear() &&
+  first.getUTCMonth() === second.getUTCMonth() &&
+  first.getUTCDate() === second.getUTCDate();
