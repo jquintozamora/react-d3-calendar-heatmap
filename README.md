@@ -10,6 +10,7 @@ and [React](https://facebook.github.io/react) based on [Mike Bostock´s Calendar
 ## DEMO
 
 [React D3 Calendar Heatmap demo](https://jquintozamora.github.io/react-d3-calendar-heatmap)
+
 ## Installation
 
 Steps to use react-d3-calendar-heatmap in your React project
@@ -24,18 +25,20 @@ npm install --save react-d3-calendar-heatmap
 
 ```js
 import CalendarHeatMap from "react-d3-calendar-heatmap";
+// Include its styles in you build process as well
+import "react-d3-calendar-heatmap/dist/react-d3-calendar-heatmap.css";
 ```
 
 ### 3. Usage
 
 ```ts
 interface CalendarHeatMapItemType {
-  day: string
-  value: number
-  projects?: Array<Record<string, number>>
+  day: string;
+  value: number;
+  projects?: Array<Record<string, number>>;
 }
 
-<CalendarHeatMap<CalendarHeatMapItemType> data={data} />
+<CalendarHeatMap<CalendarHeatMapItemType> data={data} />;
 ```
 
 ## App sample

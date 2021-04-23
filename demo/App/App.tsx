@@ -22,9 +22,10 @@ const App: React.FunctionComponent = () => {
   return (
     <CalendarHeatMap<CalendarHeatMapItemType>
       data={data}
+      // weekday="sunday"
       timeRange={timeRange}
       customD3ColorScale={scaleSequential(chromatic.interpolateSpectral)}
-      width={600}
+      width={450}
       cellSize={14}
     />
   );

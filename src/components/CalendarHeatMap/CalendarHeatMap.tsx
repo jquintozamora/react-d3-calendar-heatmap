@@ -21,6 +21,7 @@ import Cell from "../Cell";
 import {
   BaseCalendarHeatMapItemType,
   CalendarHeatMapProps,
+  TimeRange,
 } from "./CalendarHeatMapProps";
 import { sameDay } from "../../helpers";
 
@@ -36,90 +37,81 @@ const CalendarHeatMap = <
   tooltipPlacement,
   tooltipClassName,
   timeRange,
-
   customD3ColorScale = scaleSequential(interpolatePiYG),
   width = 900,
   cellSize = 17,
 }: CalendarHeatMapProps<CalendarHeatMapItemType>): React.ReactElement => {
-  const currentTimeRange = timeRange
+  const { 0: firstData, [data.length - 1]: lastData } = data;
+  const currentTimeRange: TimeRange = timeRange
     ? timeRange
-    : data && data.length > 0
-    ? {
-        from: utcYear(new Date(data[0].day)),
-        to: new Date(data[data.length - 1].day),
-      }
-    : undefined;
-  let filteredData = currentTimeRange
-    ? data.filter((d) => {
-        const currentDay = new Date(d.day);
-        return (
-          currentDay >= currentTimeRange.from &&
-          currentDay <= currentTimeRange.to
-        );
-      })
-    : data;
+    : {
+        from: utcYear(new Date(firstData ? firstData.day : "")),
+        to: new Date(lastData ? lastData.day : ""),
+      };
 
-  const [color] = React.useState(() => {
-    const max = quantile(filteredData, 0.9975, (d) => Math.abs(d.value));
-    return customD3ColorScale.domain([-max, +max]);
-  });
+  // Make sure we narrow down data to fit in time time range
+  const timeRangeData = timeDay
+    .range(currentTimeRange.from, currentTimeRange.to)
+    .map((day) => {
+      const currentData = data
+        .filter((item) => sameDay(new Date(item.day), day))
+        .pop();
+      return currentData
+        ? currentData
+        : ({
+            day: day.toISOString(),
+            value: 0,
+          } as CalendarHeatMapItemType);
+    });
 
-  const height = cellSize * (weekday === "weekday" ? 7 : 9);
+  // formatting
+  const formatValue = format("+.2%");
+  const formatDate = utcFormat("%x");
+  const formatDay = (i) => "SMTWTFS"[i];
+  const formatMonth = (d: Date) => {
+    if (d.getUTCMonth() === 0) {
+      return (
+        <>
+          {utcFormat("%b")(d)}
+          <title>{d.getUTCFullYear()}</title>
+        </>
+      );
+    }
+    return utcFormat("%b")(d);
+  };
+
+  // color
+  const max = quantile(timeRangeData, 0.9975, (d) => Math.abs(d.value));
+  const color = customD3ColorScale.domain([-max, +max]);
+
   const timeWeek = weekday === "sunday" ? utcSunday : utcMonday;
   const countDay =
     weekday === "sunday" ? (i: number) => i : (i: number) => (i + 6) % 7;
 
-  const formatValue = format("+.2%");
-
-  const formatDate = utcFormat("%x");
-
-  const formatDay = (i) => "SMTWTFS"[i];
-
-  const formatMonth = utcFormat("%b");
-
   const rows = weekday === "weekday" ? range(1, 6) : range(7);
 
-  const { 0: firstItem, [filteredData.length - 1]: lastItem } = filteredData;
-  let columns = [];
-  if (firstItem) {
-    const firstDay = new Date(firstItem.day);
-    const lastDay = new Date(lastItem.day);
-    columns = utcMonths(
-      currentTimeRange
-        ? utcMonth(currentTimeRange.from)
-        : utcMonth(utcYear(firstDay)),
-      currentTimeRange ? currentTimeRange.to : lastDay
-    );
-  } else {
-    console.warn("CalendarHeatMap: Please provide valid data or time range");
-  }
-
-  if (currentTimeRange) {
-    const tempFilteredData = timeDay
-      .range(currentTimeRange.from, currentTimeRange.to)
-      .map((day) => {
-        const currentData = filteredData
-          .filter((item) => sameDay(new Date(item.day), day))
-          .pop();
-        if (currentData) {
-          return currentData;
-        }
-        return {
-          day: day.toISOString(),
-          value: 0,
-        } as CalendarHeatMapItemType;
-      });
-    filteredData = tempFilteredData;
-  }
+  const columns = utcMonths(
+    utcMonth(currentTimeRange.from),
+    currentTimeRange.to
+  );
 
   const cells =
     weekday === "weekday"
-      ? filteredData.filter(
+      ? timeRangeData.filter(
           (d) => ![0, 6].includes(new Date(d.day).getUTCDay())
         )
-      : filteredData;
+      : timeRangeData;
+
+  const headerPadding = 3;
+  const marginLeft = 0;
+  const marginTop = 0;
+  const marginBottom = 0;
+  // We control width with prop, use it to set marginRight for now
+  // const marginRight = 0;
 
   const svgWidth = width; // / (12 / columns.length);
+  const svgHeight =
+    cellSize * (weekday === "weekday" ? 6 : 8) + marginTop + marginBottom;
 
   return (
     <TooltipProvider
@@ -130,17 +122,25 @@ const CalendarHeatMap = <
       tooltipOffsetY={tooltipOffsetY}
     >
       <div className={classnames("CalendarHeatMap", className)}>
-        <svg fontSize="10px" viewBox={`0 0 ${svgWidth} ${height}`}>
-          <g id="year" transform={`translate(40.5, ${cellSize * 1.5})`}>
-            <text x={-5} y={-5} fontWeight="bold" textAnchor="end">
-              2021
+        <svg fontSize="10px" viewBox={`0 0 ${svgWidth} ${svgHeight}`}>
+          <g
+            id="year"
+            transform={`translate(${28 + marginLeft}, ${13 + marginTop})`}
+          >
+            <text
+              x={-headerPadding}
+              y={-headerPadding}
+              fontWeight="bold"
+              textAnchor="end"
+            >
+              {currentTimeRange.from.getUTCFullYear()}
             </text>
             <g textAnchor="end">
               {rows.map((row, index) => {
                 return (
                   <text
                     key={index}
-                    x={-5}
+                    x={-headerPadding}
                     y={(countDay(row) + 0.5) * cellSize}
                     dy="0.31em"
                   >
@@ -187,7 +187,7 @@ const CalendarHeatMap = <
                           cellSize +
                         2
                       }
-                      y={-5}
+                      y={-headerPadding}
                     >
                       {formatMonth(d)}
                     </text>

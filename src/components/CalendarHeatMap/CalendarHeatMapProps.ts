@@ -1,6 +1,11 @@
 import { ScaleSequential } from "d3-scale";
 import { TooltipPlacement } from "../Tooltip/types";
 
+export interface TimeRange {
+  from: Date;
+  to: Date;
+}
+
 export type BaseCalendarHeatMapItemType = { day: string; value: number };
 
 export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
@@ -39,7 +44,7 @@ export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
    */
   tooltipOffsetY?: number;
 
-  timeRange?: { from: Date; to: Date };
+  timeRange?: TimeRange;
 
   /**
    * Custom ScaleSequential from D3
