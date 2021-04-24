@@ -1,3 +1,9 @@
+## 0.0.4
+- Add projects for tooltip
+- Refactor timeRange and data 
+- Cover different years on time range
+- Remove margins
+
 ## 0.0.3
 
 - Expose props: `customD3ColorScale`, `width` and `cellSize`

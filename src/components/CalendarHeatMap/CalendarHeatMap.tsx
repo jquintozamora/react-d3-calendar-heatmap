@@ -42,43 +42,33 @@ const CalendarHeatMap = <
   cellSize = 17,
 }: CalendarHeatMapProps<CalendarHeatMapItemType>): React.ReactElement => {
   const { 0: firstData, [data.length - 1]: lastData } = data;
+
   const currentTimeRange: TimeRange = timeRange
     ? timeRange
     : {
         from: utcYear(new Date(firstData ? firstData.day : "")),
         to: new Date(lastData ? lastData.day : ""),
       };
+  const { from, to } = currentTimeRange;
 
   // Make sure we narrow down data to fit in time time range
-  const timeRangeData = timeDay
-    .range(currentTimeRange.from, currentTimeRange.to)
-    .map((day) => {
-      const currentData = data
-        .filter((item) => sameDay(new Date(item.day), day))
-        .pop();
-      return currentData
-        ? currentData
-        : ({
-            day: day.toISOString(),
-            value: 0,
-          } as CalendarHeatMapItemType);
-    });
+  const timeRangeData = timeDay.range(from, to).map((day) => {
+    const currentData = data
+      .filter((item) => sameDay(new Date(item.day), day))
+      .pop();
+    return currentData
+      ? currentData
+      : ({
+          day: day.toISOString(),
+          value: 0,
+        } as CalendarHeatMapItemType);
+  });
 
   // formatting
-  const formatValue = format("+.2%");
-  const formatDate = utcFormat("%x");
+  const formatValue = format(".2f");
+  const formatDate = utcFormat("%Y-%m-%d");
   const formatDay = (i) => "SMTWTFS"[i];
-  const formatMonth = (d: Date) => {
-    if (d.getUTCMonth() === 0) {
-      return (
-        <>
-          {utcFormat("%b")(d)}
-          <title>{d.getUTCFullYear()}</title>
-        </>
-      );
-    }
-    return utcFormat("%b")(d);
-  };
+  const formatMonth = utcFormat("%b");
 
   // color
   const max = quantile(timeRangeData, 0.9975, (d) => Math.abs(d.value));
@@ -90,10 +80,7 @@ const CalendarHeatMap = <
 
   const rows = weekday === "weekday" ? range(1, 6) : range(7);
 
-  const columns = utcMonths(
-    utcMonth(currentTimeRange.from),
-    currentTimeRange.to
-  );
+  const columns = utcMonths(utcMonth(from), to);
 
   const cells =
     weekday === "weekday"
@@ -113,6 +100,12 @@ const CalendarHeatMap = <
   const svgHeight =
     cellSize * (weekday === "weekday" ? 6 : 8) + marginTop + marginBottom;
 
+  const isSameYear = from.getUTCFullYear() === to.getUTCFullYear();
+  const year = `${from.getUTCFullYear()}${
+    !isSameYear ? "/" + to.getUTCFullYear().toString().slice(-2) : ""
+  }`;
+  const offsetYear = isSameYear ? 0 : 15;
+
   return (
     <TooltipProvider
       tooltipPlacement={tooltipPlacement}
@@ -125,7 +118,9 @@ const CalendarHeatMap = <
         <svg fontSize="10px" viewBox={`0 0 ${svgWidth} ${svgHeight}`}>
           <g
             id="year"
-            transform={`translate(${28 + marginLeft}, ${13 + marginTop})`}
+            transform={`translate(${28 + marginLeft + offsetYear}, ${
+              13 + marginTop
+            })`}
           >
             <text
               x={-headerPadding}
@@ -133,7 +128,7 @@ const CalendarHeatMap = <
               fontWeight="bold"
               textAnchor="end"
             >
-              {currentTimeRange.from.getUTCFullYear()}
+              {year}
             </text>
             <g textAnchor="end">
               {rows.map((row, index) => {
@@ -170,23 +165,8 @@ const CalendarHeatMap = <
               {columns.map((d, index) => {
                 return (
                   <g key={index}>
-                    {/* {index && (
-                    <path
-                      fill="none"
-                      stroke="#fff"
-                      strokeWidth={3}
-                      d={pathMonth(d)}
-                    ></path>
-                  )} */}
                     <text
-                      x={
-                        timeWeek.count(
-                          currentTimeRange ? currentTimeRange.from : utcYear(d),
-                          timeWeek.ceil(d)
-                        ) *
-                          cellSize +
-                        2
-                      }
+                      x={timeWeek.count(from, timeWeek.ceil(d)) * cellSize + 2}
                       y={-headerPadding}
                     >
                       {formatMonth(d)}

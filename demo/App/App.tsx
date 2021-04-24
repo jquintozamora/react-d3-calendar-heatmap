@@ -10,7 +10,7 @@ import { data } from "../data/data";
 interface CalendarHeatMapItemType {
   day: string;
   value: number;
-  projects?: Array<Record<string, number>>;
+  projects?: Record<string, number>;
 }
 
 const timeRange = {

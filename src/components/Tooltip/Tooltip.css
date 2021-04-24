@@ -8,6 +8,10 @@
   font-size: 12px;
 }
 
+.CalendarHeatMap__tooltipProjects {
+  margin-top: 10px;
+}
+
 .CalendarHeatMap__tooltipLabel {
   word-break: break-all;
   white-space: normal;

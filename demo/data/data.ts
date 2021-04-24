@@ -2,12 +2,12 @@ export const data = [
   {
     day: "2021-02-11",
     value: 72.52845,
-    projects: [{ projectOne: 1200, projectTwo: 200 }],
+    projects: { projectOne: 1200, projectTwo: 200 },
   },
   {
     day: "2021-02-12",
     value: 28.545916666666667,
-    projects: [{ projectOne: 200, projectTwo: 30 }],
+    projects: { projectOne: 200, projectTwo: 30 },
   },
   { day: "2021-02-13", value: 263.1731833333333 },
   { day: "2021-02-15", value: 209.08071666666666 },

@@ -35,6 +35,7 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
         <Tooltip
           label={`${formatDate(new Date(c.day))}`}
           value={`${formatValue(c.value)}`}
+          projects={"projects" in c ? c["projects"] : undefined}
         />,
         ev
       );
@@ -47,10 +48,7 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
   }, [hideTooltip]);
 
   const cellDay = new Date(c.day);
-  const x =
-    timeWeek.count(timeRange ? timeRange.from : utcYear(cellDay), cellDay) *
-      cellSize +
-    1;
+  const x = timeWeek.count(timeRange.from, cellDay) * cellSize + 1;
 
   return (
     <rect
