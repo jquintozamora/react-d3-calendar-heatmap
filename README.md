@@ -27,7 +27,7 @@ npm install --save react-d3-calendar-heatmap
 ```js
 import CalendarHeatMap from "react-d3-calendar-heatmap";
 // Include its styles in you build process as well
-import "react-d3-calendar-heatmap/dist/react-d3-calendar-heatmap.css";
+import "react-d3-calendar-heatmap/dist/react.d3.calendar.heatmap.css";
 ```
 
 ### 3. Usage
