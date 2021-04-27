@@ -28,6 +28,7 @@ const App: React.FunctionComponent = () => {
       width={450}
       cellSize={14}
       cellShape="square"
+      valueFn={(value) => value.toString()}
     />
   );
 };

@@ -60,4 +60,9 @@ export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
   cellShape?: CellShape;
 
   formatDate?: (date: Date) => string;
+
+  /**
+   * Override value text for node
+   */
+  valueFn?: (value: number) => string;
 }

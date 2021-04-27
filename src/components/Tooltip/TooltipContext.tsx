@@ -4,6 +4,7 @@ export interface ITooltipContext {
   showTooltip: (content: React.ReactNode, event: React.MouseEvent) => void;
   hideTooltip: () => void;
   tooltipClassName?: string;
+  valueFn: (n: number | { valueOf(): number }) => string;
   disableTooltip: boolean;
 }
 
@@ -15,6 +16,7 @@ const defaultValues: ITooltipContext = {
     throw new Error("TooltipContext not initalized");
   },
   disableTooltip: false,
+  valueFn: (n: number) => `${n}`,
 };
 
 const TooltipContext = React.createContext<ITooltipContext>(defaultValues);

@@ -9,6 +9,7 @@ const TooltipProvider: React.FunctionComponent<{
   disableTooltip: boolean;
   tooltipOffsetX?: number;
   tooltipOffsetY?: number;
+  valueFn: (n: number | { valueOf(): number }) => string;
   children?: React.ReactNode;
 }> = ({
   tooltipPlacement,
@@ -16,6 +17,7 @@ const TooltipProvider: React.FunctionComponent<{
   tooltipOffsetX,
   tooltipOffsetY,
   disableTooltip,
+  valueFn,
   children,
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -28,12 +30,7 @@ const TooltipProvider: React.FunctionComponent<{
 
   const showTooltip = React.useCallback(
     (content: React.ReactNode, { clientX, clientY }: React.MouseEvent) => {
-      const {
-        width,
-        height,
-        left,
-        top,
-      } = containerRef.current.getBoundingClientRect();
+      const { width, left, top } = containerRef.current.getBoundingClientRect();
       const x = clientX - left;
       const y = clientY - top;
 
@@ -59,9 +56,10 @@ const TooltipProvider: React.FunctionComponent<{
       showTooltip,
       hideTooltip,
       tooltipClassName,
+      valueFn,
       disableTooltip,
     }),
-    [showTooltip, hideTooltip, tooltipClassName]
+    [showTooltip, hideTooltip, tooltipClassName, valueFn]
   );
 
   return (

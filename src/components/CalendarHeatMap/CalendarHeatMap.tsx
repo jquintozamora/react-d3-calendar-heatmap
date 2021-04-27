@@ -41,7 +41,8 @@ const CalendarHeatMap = <
   width = 900,
   cellSize = 17,
   cellShape = "circle",
-  formatDate = utcFormat("%Y-%m-%d")
+  formatDate = utcFormat("%Y-%m-%d"),
+  valueFn = format(".2f"),
 }: CalendarHeatMapProps<CalendarHeatMapItemType>): React.ReactElement => {
   const { 0: firstData, [data.length - 1]: lastData } = data;
 
@@ -67,7 +68,6 @@ const CalendarHeatMap = <
   });
 
   // formatting
-  const formatValue = format(".2f");
   const formatDay = (i) => "SMTWTFS"[i];
   const formatMonth = utcFormat("%b");
 
@@ -114,6 +114,7 @@ const CalendarHeatMap = <
       disableTooltip={disableTooltip}
       tooltipOffsetX={tooltipOffsetX}
       tooltipOffsetY={tooltipOffsetY}
+      valueFn={valueFn}
     >
       <div className={classnames("CalendarHeatMap", className)}>
         <svg fontSize="10px" viewBox={`0 0 ${svgWidth} ${svgHeight}`}>
@@ -156,7 +157,6 @@ const CalendarHeatMap = <
                     countDay={countDay}
                     timeWeek={timeWeek}
                     formatDate={formatDate}
-                    formatValue={formatValue}
                     timeRange={currentTimeRange}
                     cellShape={cellShape}
                   />

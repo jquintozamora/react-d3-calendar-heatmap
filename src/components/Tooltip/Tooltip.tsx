@@ -6,20 +6,22 @@ import useTooltip from "./useTooltip";
 
 interface TooltipProps {
   label: React.ReactNode;
-  value?: number | string | Date;
+  value?: number;
   projects?: Record<string, number>;
 }
 
 export const Tooltip = React.memo<TooltipProps>(
   ({ label, value, projects }) => {
-    const { tooltipClassName } = useTooltip();
+    const { tooltipClassName, valueFn } = useTooltip();
     return (
       <div className={tooltipClassName}>
         <div className="CalendarHeatMap__tooltip">
           {value !== undefined ? (
             <>
               <span className="CalendarHeatMap__tooltipLabel">{label}: </span>
-              <span className="CalendarHeatMap__tooltipValue">{`${value}`}</span>
+              <span className="CalendarHeatMap__tooltipValue">{`${valueFn(
+                value
+              )}`}</span>
             </>
           ) : (
             label
@@ -32,7 +34,9 @@ export const Tooltip = React.memo<TooltipProps>(
                     <span className="CalendarHeatMap__tooltipLabel">
                       {project}:{" "}
                     </span>
-                    <span className="CalendarHeatMap__tooltipValue">{`${projects[project]}`}</span>
+                    <span className="CalendarHeatMap__tooltipValue">{`${valueFn(
+                      projects[project]
+                    )}`}</span>
                   </div>
                 );
               })}

@@ -15,7 +15,6 @@ interface CellProps<CalendarHeatMapItemType> {
   countDay: (i: number) => number;
   timeWeek: CountableTimeInterval;
   formatDate: (date: Date) => string;
-  formatValue: (n: number | { valueOf(): number }) => string;
   timeRange?: { from: Date; to: Date };
   cellShape?: CellShape;
 }
@@ -27,7 +26,6 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
   countDay,
   timeWeek,
   formatDate,
-  formatValue,
   timeRange,
   cellShape,
   ...rest
@@ -39,7 +37,7 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
       showTooltip(
         <Tooltip
           label={`${formatDate(new Date(c.day))}`}
-          value={`${formatValue(c.value)}`}
+          value={c.value}
           projects={"projects" in c ? c["projects"] : undefined}
         />,
         ev
