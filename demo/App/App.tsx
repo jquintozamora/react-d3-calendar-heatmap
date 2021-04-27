@@ -15,7 +15,7 @@ interface CalendarHeatMapItemType {
 
 const timeRange = {
   from: new Date("2020-10-27"),
-  to: new Date("2021-11-2"),
+  to: new Date("2021-03-2"),
 };
 
 const App: React.FunctionComponent = () => {

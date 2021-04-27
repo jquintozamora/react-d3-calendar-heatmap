@@ -105,7 +105,7 @@ const CalendarHeatMap = <
   const year = `${from.getUTCFullYear()}${
     !isSameYear ? "/" + to.getUTCFullYear().toString().slice(-2) : ""
   }`;
-  const offsetYear = isSameYear ? 0 : 15;
+  const offsetYear = isSameYear ? 5 : 20;
 
   return (
     <TooltipProvider
@@ -119,13 +119,12 @@ const CalendarHeatMap = <
       <div className={classnames("CalendarHeatMap", className)}>
         <svg fontSize="10px" viewBox={`0 0 ${svgWidth} ${svgHeight}`}>
           <g
-            id="year"
             transform={`translate(${28 + marginLeft + offsetYear}, ${
               13 + marginTop
             })`}
           >
             <text
-              x={-headerPadding}
+              x={-headerPadding - 5}
               y={-headerPadding}
               fontWeight="bold"
               textAnchor="end"
@@ -137,7 +136,7 @@ const CalendarHeatMap = <
                 return (
                   <text
                     key={index}
-                    x={-headerPadding}
+                    x={-headerPadding - 5}
                     y={(countDay(row) + 0.5) * cellSize}
                     dy="0.31em"
                   >
