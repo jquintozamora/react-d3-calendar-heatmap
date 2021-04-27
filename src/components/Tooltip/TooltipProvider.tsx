@@ -39,13 +39,7 @@ const TooltipProvider: React.FunctionComponent<{
 
       if (!placement) {
         const autoPlacement: TooltipPlacement =
-          x < width / 2
-            ? y < height / 2
-              ? "bottomRight"
-              : "topRight"
-            : y < height / 2
-            ? "bottomLeft"
-            : "topLeft";
+          x < width / 2 ? "right" : "left";
         setPlacement(autoPlacement);
       }
 

@@ -26,11 +26,11 @@ export const Tooltip = React.memo<TooltipProps>(
           )}
           {projects && (
             <div className="CalendarHeatMap__tooltipProjects">
-              {Object.keys(projects).map((project) => {
+              {Object.keys(projects).map((project, index) => {
                 return (
-                  <div>
+                  <div key={index}>
                     <span className="CalendarHeatMap__tooltipLabel">
-                      {project}:
+                      {project}:{" "}
                     </span>
                     <span className="CalendarHeatMap__tooltipValue">{`${projects[project]}`}</span>
                   </div>

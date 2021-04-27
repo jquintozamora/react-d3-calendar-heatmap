@@ -1,9 +1,12 @@
 import * as React from "react";
 import useTooltip from "../Tooltip/useTooltip";
 import { Tooltip } from "../Tooltip/Tooltip";
-import { CountableTimeInterval, utcYear } from "d3-time";
+import { CountableTimeInterval } from "d3-time";
 import { ScaleSequential } from "d3-scale";
-import { BaseCalendarHeatMapItemType } from "../CalendarHeatMap/CalendarHeatMapProps";
+import {
+  BaseCalendarHeatMapItemType,
+  CellShape,
+} from "../CalendarHeatMap/CalendarHeatMapProps";
 
 interface CellProps<CalendarHeatMapItemType> {
   c: CalendarHeatMapItemType;
@@ -14,6 +17,7 @@ interface CellProps<CalendarHeatMapItemType> {
   formatDate: (date: Date) => string;
   formatValue: (n: number | { valueOf(): number }) => string;
   timeRange?: { from: Date; to: Date };
+  cellShape?: CellShape;
 }
 
 const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
@@ -25,6 +29,7 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
   formatDate,
   formatValue,
   timeRange,
+  cellShape,
   ...rest
 }: CellProps<CalendarHeatMapItemType>): React.ReactElement => {
   const { hideTooltip, showTooltip, disableTooltip } = useTooltip();
@@ -55,7 +60,7 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
       onMouseEnter={disableTooltip ? undefined : handleMouseMove}
       onMouseLeave={disableTooltip ? undefined : handleMouseLeave}
       onMouseMove={disableTooltip ? undefined : handleMouseMove}
-      rx={9999}
+      rx={cellShape === "circle" ? 9999 : 0}
       width={cellSize - 2}
       height={cellSize - 2}
       x={x}

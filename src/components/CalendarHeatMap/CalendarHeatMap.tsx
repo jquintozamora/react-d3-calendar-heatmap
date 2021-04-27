@@ -40,6 +40,8 @@ const CalendarHeatMap = <
   customD3ColorScale = scaleSequential(interpolatePiYG),
   width = 900,
   cellSize = 17,
+  cellShape = "circle",
+  formatDate = utcFormat("%Y-%m-%d")
 }: CalendarHeatMapProps<CalendarHeatMapItemType>): React.ReactElement => {
   const { 0: firstData, [data.length - 1]: lastData } = data;
 
@@ -66,7 +68,6 @@ const CalendarHeatMap = <
 
   // formatting
   const formatValue = format(".2f");
-  const formatDate = utcFormat("%Y-%m-%d");
   const formatDay = (i) => "SMTWTFS"[i];
   const formatMonth = utcFormat("%b");
 
@@ -157,18 +158,24 @@ const CalendarHeatMap = <
                     formatDate={formatDate}
                     formatValue={formatValue}
                     timeRange={currentTimeRange}
+                    cellShape={cellShape}
                   />
                 );
               })}
             </g>
             <g>
               {columns.map((d, index) => {
+                const monthPosX =
+                  timeWeek.count(from, timeWeek.ceil(d)) * cellSize + 2;
+
+                // When timeRange starts from 29 or 30, two months label overlaps
+                if (monthPosX <= -40) {
+                  return null;
+                }
+
                 return (
                   <g key={index}>
-                    <text
-                      x={timeWeek.count(from, timeWeek.ceil(d)) * cellSize + 2}
-                      y={-headerPadding}
-                    >
+                    <text x={Math.max(monthPosX, 0)} y={-headerPadding}>
                       {formatMonth(d)}
                     </text>
                   </g>

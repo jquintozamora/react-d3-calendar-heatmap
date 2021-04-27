@@ -1,3 +1,9 @@
+
+## 0.0.5
+- Solve issue where month overlaps year
+- Tooltip adjustments
+- Expose props: `cellShape` and `formatDate`
+
 ## 0.0.4
 - Add projects for tooltip
 - Refactor timeRange and data 

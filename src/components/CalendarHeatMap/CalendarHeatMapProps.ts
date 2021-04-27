@@ -6,6 +6,8 @@ export interface TimeRange {
   to: Date;
 }
 
+export type CellShape = "circle" | "square";
+
 export type BaseCalendarHeatMapItemType = { day: string; value: number };
 
 export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
@@ -54,4 +56,8 @@ export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
   width?: number;
 
   cellSize?: number;
+
+  cellShape?: CellShape;
+
+  formatDate?: (date: Date) => string;
 }

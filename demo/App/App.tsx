@@ -10,11 +10,11 @@ import { data } from "../data/data";
 interface CalendarHeatMapItemType {
   day: string;
   value: number;
-  projects?: Record<string, number>;
+  projects?: Record<string, string>;
 }
 
 const timeRange = {
-  from: new Date("2020-10-01"),
+  from: new Date("2020-10-1"),
   to: new Date(),
 };
 
@@ -27,6 +27,7 @@ const App: React.FunctionComponent = () => {
       customD3ColorScale={scaleSequential(chromatic.interpolateSpectral)}
       width={450}
       cellSize={14}
+      cellShape="square"
     />
   );
 };
