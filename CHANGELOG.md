@@ -1,3 +1,5 @@
+## 0.0.6
+- Expose prop `valueFn` 
 
 ## 0.0.5
 - Solve issue where month overlaps year
