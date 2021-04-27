@@ -169,7 +169,7 @@ const CalendarHeatMap = <
                   timeWeek.count(from, timeWeek.ceil(d)) * cellSize + 2;
 
                 // When timeRange starts from 29 or 30, two months label overlaps
-                if (monthPosX <= -40) {
+                if (monthPosX <= -30) {
                   return null;
                 }
 

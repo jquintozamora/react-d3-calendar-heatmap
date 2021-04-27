@@ -14,19 +14,19 @@ interface CalendarHeatMapItemType {
 }
 
 const timeRange = {
-  from: new Date("2020-10-1"),
-  to: new Date(),
+  from: new Date("2020-10-27"),
+  to: new Date("2021-11-2"),
 };
 
 const App: React.FunctionComponent = () => {
   return (
     <CalendarHeatMap<CalendarHeatMapItemType>
       data={data}
-      // weekday="sunday"
+      weekday="sunday"
       timeRange={timeRange}
       customD3ColorScale={scaleSequential(chromatic.interpolateSpectral)}
-      width={450}
-      cellSize={14}
+      width={250}
+      cellSize={11}
       cellShape="square"
       valueFn={(value) => value.toString()}
     />
