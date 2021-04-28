@@ -1,17 +1,35 @@
+## 0.0.9
+
+- Expose props: `defaultColor`,
+  `marginTop`,
+  `marginBottom`,
+  `marginLeft`,
+  `paddingUnderMonthHeader`,
+  `paddingAfterDayOfWeekHeader`,
+  and `cellPadding`
+
+## 0.0.8
+
+- Padding for year and days of week
+
 ## 0.0.7
+
 - Issue with overlap months
 
 ## 0.0.6
-- Expose prop `valueFn` 
+
+- Expose prop `valueFn`
 
 ## 0.0.5
+
 - Solve issue where month overlaps year
 - Tooltip adjustments
 - Expose props: `cellShape` and `formatDate`
 
 ## 0.0.4
+
 - Add projects for tooltip
-- Refactor timeRange and data 
+- Refactor timeRange and data
 - Cover different years on time range
 - Remove margins
 

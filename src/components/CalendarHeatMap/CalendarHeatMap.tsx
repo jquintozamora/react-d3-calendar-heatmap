@@ -43,6 +43,13 @@ const CalendarHeatMap = <
   cellShape = "circle",
   formatDate = utcFormat("%Y-%m-%d"),
   valueFn = format(".2f"),
+  defaultColor = "#eeeeee",
+  marginTop = 0,
+  marginBottom = 0,
+  marginLeft = 0,
+  paddingUnderMonthHeader = 8,
+  paddingAfterDayOfWeekHeader = 8,
+  cellPadding = 2,
 }: CalendarHeatMapProps<CalendarHeatMapItemType>): React.ReactElement => {
   const { 0: firstData, [data.length - 1]: lastData } = data;
 
@@ -90,22 +97,23 @@ const CalendarHeatMap = <
         )
       : timeRangeData;
 
-  const headerPadding = 3;
-  const marginLeft = 0;
-  const marginTop = 0;
-  const marginBottom = 0;
   // We control width with prop, use it to set marginRight for now
   // const marginRight = 0;
 
   const svgWidth = width; // / (12 / columns.length);
   const svgHeight =
-    cellSize * (weekday === "weekday" ? 6 : 8) + marginTop + marginBottom;
+    cellSize * (weekday === "weekday" ? 6 : 8) +
+    marginTop +
+    marginBottom +
+    paddingUnderMonthHeader;
 
   const isSameYear = from.getUTCFullYear() === to.getUTCFullYear();
   const year = `${from.getUTCFullYear()}${
     !isSameYear ? "/" + to.getUTCFullYear().toString().slice(-2) : ""
   }`;
-  const offsetYear = isSameYear ? 5 : 20;
+  const offsetYear = isSameYear
+    ? paddingAfterDayOfWeekHeader
+    : paddingAfterDayOfWeekHeader + 15;
 
   return (
     <TooltipProvider
@@ -120,12 +128,12 @@ const CalendarHeatMap = <
         <svg fontSize="10px" viewBox={`0 0 ${svgWidth} ${svgHeight}`}>
           <g
             transform={`translate(${28 + marginLeft + offsetYear}, ${
-              13 + marginTop
+              10 + marginTop + paddingUnderMonthHeader
             })`}
           >
             <text
-              x={-headerPadding - 5}
-              y={-headerPadding}
+              x={-paddingAfterDayOfWeekHeader}
+              y={-paddingUnderMonthHeader}
               fontWeight="bold"
               textAnchor="end"
             >
@@ -136,7 +144,7 @@ const CalendarHeatMap = <
                 return (
                   <text
                     key={index}
-                    x={-headerPadding - 5}
+                    x={-paddingAfterDayOfWeekHeader}
                     y={(countDay(row) + 0.5) * cellSize}
                     dy="0.31em"
                   >
@@ -158,6 +166,8 @@ const CalendarHeatMap = <
                     formatDate={formatDate}
                     timeRange={currentTimeRange}
                     cellShape={cellShape}
+                    defaultColor={defaultColor}
+                    cellPadding={cellPadding}
                   />
                 );
               })}
@@ -174,7 +184,10 @@ const CalendarHeatMap = <
 
                 return (
                   <g key={index}>
-                    <text x={Math.max(monthPosX, 0)} y={-headerPadding}>
+                    <text
+                      x={Math.max(monthPosX, 0)}
+                      y={-paddingUnderMonthHeader}
+                    >
                       {formatMonth(d)}
                     </text>
                   </g>

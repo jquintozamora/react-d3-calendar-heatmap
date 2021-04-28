@@ -17,17 +17,21 @@ interface CellProps<CalendarHeatMapItemType> {
   formatDate: (date: Date) => string;
   timeRange?: { from: Date; to: Date };
   cellShape?: CellShape;
+  defaultColor: string;
+  cellPadding: number;
 }
 
 const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
   color,
   cellSize,
+  cellPadding,
   c,
   countDay,
   timeWeek,
   formatDate,
   timeRange,
   cellShape,
+  defaultColor,
   ...rest
 }: CellProps<CalendarHeatMapItemType>): React.ReactElement => {
   const { hideTooltip, showTooltip, disableTooltip } = useTooltip();
@@ -51,19 +55,21 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
   }, [hideTooltip]);
 
   const cellDay = new Date(c.day);
-  const x = timeWeek.count(timeRange.from, cellDay) * cellSize + 1;
+  const x =
+    timeWeek.count(timeRange.from, cellDay) * cellSize + cellPadding / 2;
+  const y = countDay(new Date(c.day).getUTCDay()) * cellSize + cellPadding / 2;
 
   return (
     <rect
       onMouseEnter={disableTooltip ? undefined : handleMouseMove}
       onMouseLeave={disableTooltip ? undefined : handleMouseLeave}
       onMouseMove={disableTooltip ? undefined : handleMouseMove}
-      rx={cellShape === "circle" ? 9999 : 0}
-      width={cellSize - 2}
-      height={cellSize - 2}
+      rx={cellShape === "circle" ? 9999 : 1}
+      width={cellSize - cellPadding}
+      height={cellSize - cellPadding}
       x={x}
-      y={countDay(new Date(c.day).getUTCDay()) * cellSize + 0.5}
-      fill={c.value ? color(c.value) : "#eeeeee"}
+      y={y}
+      fill={c.value ? color(c.value) : defaultColor}
       {...rest}
     />
   );

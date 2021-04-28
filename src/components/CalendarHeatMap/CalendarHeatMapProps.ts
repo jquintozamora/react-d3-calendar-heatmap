@@ -65,4 +65,18 @@ export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
    * Override value text for node
    */
   valueFn?: (value: number) => string;
+
+  defaultColor?: string;
+
+  marginTop?: number;
+
+  marginBottom?: number;
+
+  marginLeft?: number;
+
+  paddingUnderMonthHeader?: number;
+
+  paddingAfterDayOfWeekHeader?: number;
+
+  cellPadding?: number;
 }

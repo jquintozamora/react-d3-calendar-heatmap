@@ -14,8 +14,8 @@ interface CalendarHeatMapItemType {
 }
 
 const timeRange = {
-  from: new Date("2020-10-27"),
-  to: new Date("2021-03-2"),
+  from: new Date("2021-02-30"),
+  to: new Date(),
 };
 
 const App: React.FunctionComponent = () => {
@@ -25,10 +25,11 @@ const App: React.FunctionComponent = () => {
       weekday="sunday"
       timeRange={timeRange}
       customD3ColorScale={scaleSequential(chromatic.interpolateSpectral)}
-      width={250}
+      width={160}
       cellSize={11}
       cellShape="square"
       valueFn={(value) => value.toString()}
+      cellPadding={1}
     />
   );
 };
