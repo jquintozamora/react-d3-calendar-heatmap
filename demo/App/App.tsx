@@ -39,13 +39,17 @@ const App: React.FunctionComponent = () => {
           month: "short",
         }).format(date)
       }
+      // formatDay={(dayOfWeek: number) => {
+      //   const date = new Date(0);
+      //   date.setDate(4 + dayOfWeek);
+      //   const weekday = new Intl.DateTimeFormat(["en"], {
+      //     weekday: "short",
+      //   }).format(date);
+      //   return weekday;
+      // }}
       formatDay={(dayOfWeek: number) => {
-        const date = new Date(0);
-        date.setDate(4 + dayOfWeek);
-        const weekday = new Intl.DateTimeFormat(["en"], {
-          weekday: "short",
-        }).format(date);
-        return weekday;
+        const arrayDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        return arrayDays[dayOfWeek];
       }}
     />
   );
