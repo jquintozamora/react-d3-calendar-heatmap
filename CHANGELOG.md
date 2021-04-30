@@ -1,3 +1,7 @@
+## 0.0.10
+- Expose `tooltipOffsetX` as distance between tooltip and cursor
+- Expose `formatDay`
+
 ## 0.0.9
 
 - Expose props: `defaultColor`,
