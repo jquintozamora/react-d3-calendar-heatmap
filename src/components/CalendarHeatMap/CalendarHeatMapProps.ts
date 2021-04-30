@@ -13,7 +13,7 @@ export type BaseCalendarHeatMapItemType = { day: string; value: number };
 export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
   className?: string;
   data: Array<CalendarHeatMapItemType>;
-  weekday?: "weekday" | "sunday";
+  weekday?: "weekday" | "weekend";
   /**
    * Tooltip placement. If none is specified then is automatic depending on
    * the quadrant
@@ -60,6 +60,8 @@ export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
   cellShape?: CellShape;
 
   formatDate?: (date: Date) => string;
+
+  formatDay?: (dayOfWeek: number) => string;
 
   /**
    * Override value text for node

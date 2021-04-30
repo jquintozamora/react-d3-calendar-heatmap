@@ -2,14 +2,7 @@ import "./CalendarHeatMap.css";
 
 import * as React from "react";
 import classnames from "classnames";
-import {
-  utcYear,
-  utcSunday,
-  utcMonday,
-  utcMonths,
-  utcMonth,
-  timeDay,
-} from "d3-time";
+import { utcYear, utcMonday, utcMonths, utcMonth, timeDay } from "d3-time";
 import { scaleSequential } from "d3-scale";
 import { interpolatePiYG } from "d3-scale-chromatic";
 import { quantile, range } from "d3-array";
@@ -50,6 +43,7 @@ const CalendarHeatMap = <
   paddingUnderMonthHeader = 8,
   paddingAfterDayOfWeekHeader = 8,
   cellPadding = 2,
+  formatDay = (dayOfWeek: number) => "SMTWTFS"[dayOfWeek],
 }: CalendarHeatMapProps<CalendarHeatMapItemType>): React.ReactElement => {
   const { 0: firstData, [data.length - 1]: lastData } = data;
 
@@ -75,18 +69,19 @@ const CalendarHeatMap = <
   });
 
   // formatting
-  const formatDay = (i) => "SMTWTFS"[i];
   const formatMonth = utcFormat("%b");
 
   // color
   const max = quantile(timeRangeData, 0.9975, (d) => Math.abs(d.value));
   const color = customD3ColorScale.domain([-max, +max]);
 
-  const timeWeek = weekday === "sunday" ? utcSunday : utcMonday;
+  const timeWeek = utcMonday;
   const countDay =
-    weekday === "sunday" ? (i: number) => i : (i: number) => (i + 6) % 7;
+    weekday === "weekend"
+      ? (i: number) => (i - (1 % 7) + 7) % 7
+      : (i: number) => (i + 6) % 7;
 
-  const rows = weekday === "weekday" ? range(1, 6) : range(7);
+  const rows = weekday === "weekday" ? range(1, 6) : range(0, 7);
 
   const columns = utcMonths(utcMonth(from), to);
 

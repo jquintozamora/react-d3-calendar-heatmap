@@ -57,7 +57,7 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
   const cellDay = new Date(c.day);
   const x =
     timeWeek.count(timeRange.from, cellDay) * cellSize + cellPadding / 2;
-  const y = countDay(new Date(c.day).getUTCDay()) * cellSize + cellPadding / 2;
+  const y = countDay(cellDay.getUTCDay()) * cellSize + cellPadding / 2;
 
   return (
     <rect

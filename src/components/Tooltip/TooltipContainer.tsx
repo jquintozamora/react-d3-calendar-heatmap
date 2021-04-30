@@ -32,11 +32,13 @@ export const TooltipContainer = React.memo<TooltipContainerProps>(
           y += 20;
           break;
         case "left":
-          x -= width;
-          y -= height / 2;
+          x -= width + offsetX;
+          y -= height / 2 + offsetY;
           break;
         case "right":
-          y -= height / 2;
+          x += 20 + offsetX;
+          y -= height / 2 + offsetY;
+          // y += height  + offsetY;
           break;
         case "top":
           x -= width / 2;
@@ -54,9 +56,6 @@ export const TooltipContainer = React.memo<TooltipContainerProps>(
           break;
       }
     }
-
-    x += offsetX;
-    y += offsetY;
 
     const style: React.CSSProperties = {
       pointerEvents: "none",
