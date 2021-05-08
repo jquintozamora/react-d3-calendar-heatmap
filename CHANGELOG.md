@@ -1,3 +1,6 @@
+## 0.0.11
+- Solve issue with date format
+
 ## 0.0.10
 - Expose `tooltipOffsetX` as distance between tooltip and cursor
 - Expose `formatDay`
