@@ -23,3 +23,16 @@ export const sameDay = (first: Date, second: Date): boolean =>
   first.getUTCFullYear() === second.getUTCFullYear() &&
   first.getUTCMonth() === second.getUTCMonth() &&
   first.getUTCDate() === second.getUTCDate();
+
+export const convertDateToUTCDate = (date: Date): Date => {
+  const dateUTC = Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  );
+
+  return new Date(dateUTC);
+};

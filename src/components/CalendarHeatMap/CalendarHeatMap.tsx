@@ -63,7 +63,7 @@ const CalendarHeatMap = <
     return currentData
       ? currentData
       : ({
-          day: day.toISOString(),
+          day: day.toISOString().slice(0, 10),
           value: 0,
         } as CalendarHeatMapItemType);
   });
@@ -173,7 +173,7 @@ const CalendarHeatMap = <
                   timeWeek.count(from, timeWeek.ceil(d)) * cellSize + 2;
 
                 // When timeRange starts from 29 or 30, two months label overlaps
-                if (monthPosX <= -30) {
+                if (monthPosX <= -10) {
                   return null;
                 }
 
