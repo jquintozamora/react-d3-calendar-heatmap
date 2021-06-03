@@ -81,4 +81,10 @@ export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
   paddingAfterDayOfWeekHeader?: number;
 
   cellPadding?: number;
+
+  /**
+   * If true, timeRange.from is ignored and it's calculated based on width to fill
+   * all width with cells
+   */
+  fillToWidth?: boolean;
 }

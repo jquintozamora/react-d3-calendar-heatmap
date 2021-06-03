@@ -44,8 +44,13 @@ const CalendarHeatMap = <
   paddingAfterDayOfWeekHeader = 8,
   cellPadding = 2,
   formatDay = (dayOfWeek: number) => "SMTWTFS"[dayOfWeek],
+  fillToWidth = false,
 }: CalendarHeatMapProps<CalendarHeatMapItemType>): React.ReactElement => {
+  const svgWidth = width; // / (12 / columns.length);
+
   const { 0: firstData, [data.length - 1]: lastData } = data;
+
+  const timeWeek = utcMonday;
 
   const currentTimeRange: TimeRange = timeRange
     ? timeRange
@@ -53,17 +58,34 @@ const CalendarHeatMap = <
         from: utcYear(new Date(firstData ? firstData.day : "")),
         to: new Date(lastData ? lastData.day : ""),
       };
-  const { from, to } = currentTimeRange;
+  const { to } = currentTimeRange;
+  let { from } = currentTimeRange;
+
+  if (fillToWidth) {
+    const offsetMultipleYearsPlusPadding = 49
+    const offsetPosX = 28 + marginLeft + offsetMultipleYearsPlusPadding;
+    let date = to;
+    let maxPosX;
+    do {
+      maxPosX =
+        timeWeek.count(timeWeek.ceil(date), to) * cellSize + 2 + offsetPosX;
+      date = timeDay.offset(date, -1);
+    } while (svgWidth >= maxPosX);
+    from = date;
+  }
 
   // Make sure we narrow down data to fit in time time range
   const timeRangeData = timeDay.range(from, to).map((day) => {
+    const utcDay = new Date(
+      Date.UTC(day.getFullYear(), day.getMonth(), day.getDate())
+    );
     const currentData = data
-      .filter((item) => sameDay(new Date(item.day), day))
+      .filter((item) => sameDay(new Date(item.day), utcDay))
       .pop();
     return currentData
       ? currentData
       : ({
-          day: day.toISOString().slice(0, 10),
+          day: utcDay.toISOString().slice(0, 10),
           value: 0,
         } as CalendarHeatMapItemType);
   });
@@ -75,7 +97,6 @@ const CalendarHeatMap = <
   const max = quantile(timeRangeData, 0.9975, (d) => Math.abs(d.value));
   const color = customD3ColorScale.domain([-max, +max]);
 
-  const timeWeek = utcMonday;
   const countDay =
     weekday === "weekend"
       ? (i: number) => (i - (1 % 7) + 7) % 7
@@ -95,7 +116,6 @@ const CalendarHeatMap = <
   // We control width with prop, use it to set marginRight for now
   // const marginRight = 0;
 
-  const svgWidth = width; // / (12 / columns.length);
   const svgHeight =
     cellSize * (weekday === "weekday" ? 6 : 8) +
     marginTop +
@@ -103,12 +123,12 @@ const CalendarHeatMap = <
     paddingUnderMonthHeader;
 
   const isSameYear = from.getUTCFullYear() === to.getUTCFullYear();
-  const year = `${from.getUTCFullYear()}${
-    !isSameYear ? "/" + to.getUTCFullYear().toString().slice(-2) : ""
-  }`;
   const offsetYear = isSameYear
     ? paddingAfterDayOfWeekHeader
     : paddingAfterDayOfWeekHeader + 15;
+  const year = `${from.getUTCFullYear()}${
+    !isSameYear ? "/" + to.getUTCFullYear().toString().slice(-2) : ""
+  }`;
 
   return (
     <TooltipProvider
@@ -159,7 +179,7 @@ const CalendarHeatMap = <
                     countDay={countDay}
                     timeWeek={timeWeek}
                     formatDate={formatDate}
-                    timeRange={currentTimeRange}
+                    from={from}
                     cellShape={cellShape}
                     defaultColor={defaultColor}
                     cellPadding={cellPadding}

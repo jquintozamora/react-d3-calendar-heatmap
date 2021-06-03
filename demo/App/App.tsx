@@ -25,12 +25,13 @@ const App: React.FunctionComponent = () => {
       weekday="weekend"
       timeRange={timeRange}
       customD3ColorScale={scaleSequential(chromatic.interpolateSpectral)}
-      width={300}
+      width={400}
       cellSize={11}
       cellShape="square"
       valueFn={(value) => value.toString()}
       cellPadding={1}
       tooltipOffsetX={5}
+      fillToWidth={false}
       formatDate={(date: Date) =>
         new Intl.DateTimeFormat("en", {
           weekday: "long",

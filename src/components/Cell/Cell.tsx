@@ -15,7 +15,7 @@ interface CellProps<CalendarHeatMapItemType> {
   countDay: (i: number) => number;
   timeWeek: CountableTimeInterval;
   formatDate: (date: Date) => string;
-  timeRange?: { from: Date; to: Date };
+  from: Date;
   cellShape?: CellShape;
   defaultColor: string;
   cellPadding: number;
@@ -29,7 +29,7 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
   countDay,
   timeWeek,
   formatDate,
-  timeRange,
+  from,
   cellShape,
   defaultColor,
   ...rest
@@ -55,8 +55,7 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
   }, [hideTooltip]);
 
   const cellDay = new Date(c.day);
-  const x =
-    timeWeek.count(timeRange.from, cellDay) * cellSize + cellPadding / 2;
+  const x = timeWeek.count(from, cellDay) * cellSize + cellPadding / 2;
   const y = countDay(cellDay.getUTCDay()) * cellSize + cellPadding / 2;
 
   return (
