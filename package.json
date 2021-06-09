@@ -1,6 +1,6 @@
 {
   "name": "react-d3-calendar-heatmap",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Calendar Heatmap in D3",
   "main": "dist/react.d3.calendar.heatmap.js",
   "types": "dist/indexPackage.d.ts",
