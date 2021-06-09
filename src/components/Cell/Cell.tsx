@@ -36,18 +36,20 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
 }: CellProps<CalendarHeatMapItemType>): React.ReactElement => {
   const { hideTooltip, showTooltip, disableTooltip } = useTooltip();
 
+  const tooltipComponent = (
+    <Tooltip
+      key={c.day}
+      label={`${formatDate(new Date(c.day))}`}
+      value={c.value}
+      projects={"projects" in c ? c["projects"] : undefined}
+    />
+  );
+
   const handleMouseMove = React.useCallback(
     (ev: React.MouseEvent) => {
-      showTooltip(
-        <Tooltip
-          label={`${formatDate(new Date(c.day))}`}
-          value={c.value}
-          projects={"projects" in c ? c["projects"] : undefined}
-        />,
-        ev
-      );
+      showTooltip(tooltipComponent, ev);
     },
-    [showTooltip]
+    [showTooltip, from]
   );
 
   const handleMouseLeave = React.useCallback(() => {

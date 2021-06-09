@@ -45,6 +45,7 @@ const CalendarHeatMap = <
   cellPadding = 2,
   formatDay = (dayOfWeek: number) => "SMTWTFS"[dayOfWeek],
   fillToWidth = false,
+  labelsFillColor = "black",
 }: CalendarHeatMapProps<CalendarHeatMapItemType>): React.ReactElement => {
   const svgWidth = width; // / (12 / columns.length);
 
@@ -52,17 +53,22 @@ const CalendarHeatMap = <
 
   const timeWeek = utcMonday;
 
-  const currentTimeRange: TimeRange = timeRange
-    ? timeRange
-    : {
-        from: utcYear(new Date(firstData ? firstData.day : "")),
-        to: new Date(lastData ? lastData.day : ""),
-      };
+  const currentTimeRange: TimeRange = React.useMemo(
+    () =>
+      timeRange
+        ? timeRange
+        : {
+            from: utcYear(new Date(firstData ? firstData.day : "")),
+            to: new Date(lastData ? lastData.day : ""),
+          },
+    [timeRange, lastData, firstData]
+  );
+
   const { to } = currentTimeRange;
   let { from } = currentTimeRange;
 
   if (fillToWidth) {
-    const offsetMultipleYearsPlusPadding = 49
+    const offsetMultipleYearsPlusPadding = 49;
     const offsetPosX = 28 + marginLeft + offsetMultipleYearsPlusPadding;
     let date = to;
     let maxPosX;
@@ -130,6 +136,35 @@ const CalendarHeatMap = <
     !isSameYear ? "/" + to.getUTCFullYear().toString().slice(-2) : ""
   }`;
 
+  const cellsNodes = React.useMemo(() => {
+    return cells.map((c, index) => {
+      return (
+        <Cell<CalendarHeatMapItemType>
+          key={index}
+          c={c}
+          color={color}
+          cellSize={cellSize}
+          countDay={countDay}
+          timeWeek={timeWeek}
+          formatDate={formatDate}
+          from={from}
+          cellShape={cellShape}
+          defaultColor={defaultColor}
+          cellPadding={cellPadding}
+        />
+      );
+    });
+  }, [
+    cellSize,
+    cellShape,
+    cellPadding,
+    defaultColor,
+    from,
+    countDay,
+    timeWeek,
+    color,
+  ]);
+
   return (
     <TooltipProvider
       tooltipPlacement={tooltipPlacement}
@@ -151,6 +186,7 @@ const CalendarHeatMap = <
               y={-paddingUnderMonthHeader}
               fontWeight="bold"
               textAnchor="end"
+              fill={labelsFillColor}
             >
               {year}
             </text>
@@ -162,31 +198,14 @@ const CalendarHeatMap = <
                     x={-paddingAfterDayOfWeekHeader}
                     y={(countDay(row) + 0.5) * cellSize}
                     dy="0.31em"
+                    fill={labelsFillColor}
                   >
                     {formatDay(row)}
                   </text>
                 );
               })}
             </g>
-            <g>
-              {cells.map((c, index) => {
-                return (
-                  <Cell<CalendarHeatMapItemType>
-                    key={index}
-                    c={c}
-                    color={color}
-                    cellSize={cellSize}
-                    countDay={countDay}
-                    timeWeek={timeWeek}
-                    formatDate={formatDate}
-                    from={from}
-                    cellShape={cellShape}
-                    defaultColor={defaultColor}
-                    cellPadding={cellPadding}
-                  />
-                );
-              })}
-            </g>
+            <g>{cellsNodes}</g>
             <g>
               {columns.map((d, index) => {
                 const monthPosX =
@@ -202,6 +221,7 @@ const CalendarHeatMap = <
                     <text
                       x={Math.max(monthPosX, 0)}
                       y={-paddingUnderMonthHeader}
+                      fill={labelsFillColor}
                     >
                       {formatMonth(d)}
                     </text>

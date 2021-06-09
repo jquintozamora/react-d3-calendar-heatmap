@@ -87,4 +87,6 @@ export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
    * all width with cells
    */
   fillToWidth?: boolean;
+
+  labelsFillColor?: string;
 }

@@ -1,10 +1,17 @@
+## 0.0.13
+
+- New prop: `labelsFillColor`
+
 ## 0.0.12
+
 - New prop: `fillToWidth`, if true timeRange.from is ignored and it's calculated depending on the width. So all width is filled with cells.
 
 ## 0.0.11
+
 - Solve issue with date format
 
 ## 0.0.10
+
 - Expose `tooltipOffsetX` as distance between tooltip and cursor
 - Expose `formatDay`
 
