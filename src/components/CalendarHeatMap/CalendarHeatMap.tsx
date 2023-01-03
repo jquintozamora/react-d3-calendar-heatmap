@@ -35,6 +35,7 @@ const CalendarHeatMap = <
   cellSize = 17,
   cellShape = "circle",
   formatDate = utcFormat("%Y-%m-%d"),
+  formatMonth = utcFormat("%b"),
   valueFn = format(".2f"),
   defaultColor = "#eeeeee",
   marginTop = 0,
@@ -95,9 +96,6 @@ const CalendarHeatMap = <
           value: 0,
         } as CalendarHeatMapItemType);
   });
-
-  // formatting
-  const formatMonth = utcFormat("%b");
 
   // color
   const max = quantile(timeRangeData, 0.9975, (d) => Math.abs(d.value));
