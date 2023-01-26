@@ -44,6 +44,11 @@ const App: React.FunctionComponent = () => {
                 month: "short",
               }).format(date)
             }
+            formatMonth={(date: Date) =>
+              new Intl.DateTimeFormat("en", {
+                month: "short",
+              }).format(date)
+            }
             // formatDay={(dayOfWeek: number) => {
             //   const date = new Date(0);
             //   date.setDate(4 + dayOfWeek);

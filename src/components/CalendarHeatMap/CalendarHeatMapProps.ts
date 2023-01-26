@@ -61,6 +61,8 @@ export interface CalendarHeatMapProps<CalendarHeatMapItemType> {
 
   formatDate?: (date: Date) => string;
 
+  formatMonth?: (date: Date) => string;
+
   formatDay?: (dayOfWeek: number) => string;
 
   /**
