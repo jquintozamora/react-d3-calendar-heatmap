@@ -1,0 +1,13 @@
+.prettierrc
+.vscode/settings.json
+assets/
+eslint.config.mjs
+gatsby-config.ts
+demo/
+tsconfig.json
+webpack/common-paths.ts
+webpack/webpack.config.dev.ts
+webpack/webpack.config.prod.ts
+.cache/
+coverage/
+public/

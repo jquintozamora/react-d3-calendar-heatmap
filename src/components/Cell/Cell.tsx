@@ -1,24 +1,24 @@
-import * as React from "react";
-import useTooltip from "../Tooltip/useTooltip";
-import { Tooltip } from "../Tooltip/Tooltip";
-import { CountableTimeInterval } from "d3-time";
-import { ScaleSequential } from "d3-scale";
+import * as React from "react"
+import useTooltip from "../Tooltip/useTooltip"
+import { Tooltip } from "../Tooltip/Tooltip"
+import { CountableTimeInterval } from "d3-time"
+import { ScaleSequential } from "d3-scale"
 import {
   BaseCalendarHeatMapItemType,
   CellShape,
-} from "../CalendarHeatMap/CalendarHeatMapProps";
+} from "../CalendarHeatMap/CalendarHeatMapProps"
 
 interface CellProps<CalendarHeatMapItemType> {
-  c: CalendarHeatMapItemType;
-  color: ScaleSequential<string, never>;
-  cellSize: number;
-  countDay: (i: number) => number;
-  timeWeek: CountableTimeInterval;
-  formatDate: (date: Date) => string;
-  from: Date;
-  cellShape?: CellShape;
-  defaultColor: string;
-  cellPadding: number;
+  c: CalendarHeatMapItemType
+  color: ScaleSequential<string, never>
+  cellSize: number
+  countDay: (i: number) => number
+  timeWeek: CountableTimeInterval
+  formatDate: (date: Date) => string
+  from: Date
+  cellShape?: CellShape
+  defaultColor: string
+  cellPadding: number
 }
 
 const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
@@ -34,31 +34,34 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
   defaultColor,
   ...rest
 }: CellProps<CalendarHeatMapItemType>): React.ReactElement => {
-  const { hideTooltip, showTooltip, disableTooltip } = useTooltip();
+  const { hideTooltip, showTooltip, disableTooltip } = useTooltip()
 
-  const tooltipComponent = (
-    <Tooltip
-      key={c.day}
-      label={`${formatDate(new Date(c.day))}`}
-      value={c.value}
-      projects={"projects" in c ? c["projects"] : undefined}
-    />
-  );
+  const tooltipComponent = React.useMemo(
+    () => (
+      <Tooltip
+        key={c.day}
+        label={`${formatDate(new Date(c.day))}`}
+        value={c.value}
+        projects={"projects" in c ? c["projects"] : undefined}
+      />
+    ),
+    [c, formatDate]
+  )
 
   const handleMouseMove = React.useCallback(
     (ev: React.MouseEvent) => {
-      showTooltip(tooltipComponent, ev);
+      showTooltip(tooltipComponent, ev)
     },
-    [showTooltip, from]
-  );
+    [showTooltip, tooltipComponent]
+  )
 
   const handleMouseLeave = React.useCallback(() => {
-    hideTooltip();
-  }, [hideTooltip]);
+    hideTooltip()
+  }, [hideTooltip])
 
-  const cellDay = new Date(c.day);
-  const x = timeWeek.count(from, cellDay) * cellSize + cellPadding / 2;
-  const y = countDay(cellDay.getUTCDay()) * cellSize + cellPadding / 2;
+  const cellDay = new Date(c.day)
+  const x = timeWeek.count(from, cellDay) * cellSize + cellPadding / 2
+  const y = countDay(cellDay.getUTCDay()) * cellSize + cellPadding / 2
 
   return (
     <rect
@@ -73,7 +76,7 @@ const Cell = <CalendarHeatMapItemType extends BaseCalendarHeatMapItemType>({
       fill={c.value ? color(c.value) : defaultColor}
       {...rest}
     />
-  );
-};
+  )
+}
 
-export default Cell;
+export default Cell
