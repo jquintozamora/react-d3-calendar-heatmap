@@ -1,3 +1,8 @@
+## 0.0.14
+
+- Update dependencies
+- Replace react-use by @react-hookz/web
+
 ## 0.0.13
 
 - New prop: `labelsFillColor`
